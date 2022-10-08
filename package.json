@@ -1,5 +1,5 @@
 {
-    "name": "node-mongodb",
+    "name": "node-mongoose",
     "version": "1.0.0",
     "description": "",
     "main": "app.js",
@@ -17,6 +17,6 @@
         "ejs": "^3.1.8",
         "express": "^4.18.1",
         "mongodb": "^4.10.0",
-        "mongoose": "^6.6.5"
+        "mongoose": "^5.13.15"
     }
 }

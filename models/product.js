@@ -1,62 +1,91 @@
-const mongodb = require('mongodb')
-const getDb = require('../util/database').getDb
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const ObjectId = mongodb.ObjectId
-class Product {
-    constructor(title, price, description, imageUrl, id, userId) {
-        this._id = id ? new ObjectId(id) : null
-        this.title = title
-        this.price = price
-        this.description = description
-        this.imageUrl = imageUrl
-        this.userId = userId
-    }
+const productSchema = new Schema({
+    title: {
+        type: String,
+        required: true,
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    imageUrl: {
+        type: String,
+        required: true,
+    },
+    // userId: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'User',
+    //     required: true,
+    // },
+})
 
-    save() {
-        const db = getDb()
-        let dbOp
-        if (this._id) {
-            dbOp = db
-                .collection('products')
-                .updateOne({ _id: this._id }, { $set: this })
-        } else {
-            dbOp = db.collection('products').insertOne(this)
-        }
+module.exports = mongoose.model('Product', productSchema)
 
-        return dbOp
-            .then(result => {
-                console.log('dbOp', result)
-            })
-            .catch(err => console.log(err))
-    }
+// const mongodb = require('mongodb')
+// const getDb = require('../util/database').getDb
 
-    static get() {
-        const db = getDb()
-        return db.collection('products').find().toArray()
-    }
+// const ObjectId = mongodb.ObjectId
+// class Product {
+//     constructor(title, price, description, imageUrl, id, userId) {
+//         this._id = id ? new ObjectId(id) : null
+//         this.title = title
+//         this.price = price
+//         this.description = description
+//         this.imageUrl = imageUrl
+//         this.userId = userId
+//     }
 
-    static find(productId) {
-        const db = getDb()
-        return db
-            .collection('products')
-            .find({ _id: new ObjectId(productId) })
-            .next()
-            .then(product => {
-                return product
-            })
-            .catch(err => console.log(err))
-    }
+//     save() {
+//         const db = getDb()
+//         let dbOp
+//         if (this._id) {
+//             dbOp = db
+//                 .collection('products')
+//                 .updateOne({ _id: this._id }, { $set: this })
+//         } else {
+//             dbOp = db.collection('products').insertOne(this)
+//         }
 
-    static delete(productId) {
-        const db = getDb()
-        return db
-            .collection('products')
-            .deleteOne({ _id: new ObjectId(productId) })
-            .then(() => {
-                console.log('Deleted Product !')
-            })
-            .catch(err => console.log(err))
-    }
-}
+//         return dbOp
+//             .then(result => {
+//                 console.log('dbOp', result)
+//             })
+//             .catch(err => console.log(err))
+//     }
 
-module.exports = Product
+//     static get() {
+//         const db = getDb()
+//         return db.collection('products').find().toArray()
+//     }
+
+//     static find(productId) {
+//         const db = getDb()
+//         return db
+//             .collection('products')
+//             .find({ _id: new ObjectId(productId) })
+//             .next()
+//             .then(product => {
+//                 return product
+//             })
+//             .catch(err => console.log(err))
+//     }
+
+//     static delete(productId) {
+//         const db = getDb()
+//         return db
+//             .collection('products')
+//             .deleteOne({ _id: new ObjectId(productId) })
+//             .then(() => {
+//                 console.log('Deleted Product !')
+//             })
+//             .catch(err => console.log(err))
+//     }
+// }
+
+// module.exports = Product
