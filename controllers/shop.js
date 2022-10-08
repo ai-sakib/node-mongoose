@@ -49,13 +49,14 @@ exports.deleteProduct = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
     req.user
-        .getCart()
-        .then(products => {
-            console.log('mapped2', products)
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then(user => {
+            const cartProducts = user.cart.items
             res.render('shop/cart', {
                 path: '/cart',
                 pageTitle: 'Your Cart',
-                products: products,
+                products: cartProducts,
             })
         })
         .catch(err => console.log(err))
@@ -65,7 +66,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
     const prodId = req.body.productId
 
     req.user
-        .deleteCartItem(prodId)
+        .removeFromCart(prodId)
         .then(response => {
             console.log('CART ITEM DELETED')
             res.redirect('/cart')
@@ -75,8 +76,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
     const prodId = req.body.productId
-
-    Product.find(prodId)
+    Product.findById(prodId)
         .then(product => {
             return req.user.addToCart(product)
         })
